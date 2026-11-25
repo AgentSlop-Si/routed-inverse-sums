@@ -1,0 +1,470 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage[colorlinks=true,breaklinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+
+\numberwithin{equation}{section}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\rank}{\operatorname{rank}}
+
+\title[Independently Routed Inverse Sums]{Independently Routed Inverse Sums and Common-Rectangle\\Obstructions for Flat Unitary and Fourier Matrices}
+
+\author[D. Kuttymbek]{Daniyar Kuttymbek}
+\address{Astana, Kazakhstan}
+\email{daniyar.kuttymbek@gmail.com}
+
+\author[A. Kuttymbek]{Adilkhan Kuttymbek}
+\address{Astana, Kazakhstan}
+\email{adilkhan.kuttymbek@gmail.com}
+
+\author[D. Kuttymbek]{Dayana Kuttymbek}
+\address{Astana, Kazakhstan}
+\email{dayanamiu74@gmail.com}
+
+\author[A. Kolpenova]{Amina Kolpenova}
+\address{Astana, Kazakhstan}
+\email{aminakolpenova@gmail.com}
+
+\author[M. Kottumbekov]{Mukhammadali Kottumbekov}
+\address{Astana, Kazakhstan}
+\email{mukhammadalikottumbek@gmail.com}
+
+\date{\today}
+\subjclass[2020]{Primary 15A03, 15A09; Secondary 05C50, 15B10, 68Q17}
+\keywords{Flat unitary matrices, discrete Fourier matrix, inverse rank structure, vertex separators, pseudoforests, column-two matrices, common low-rank rectangles}
+
+\begin{document}
+
+\begin{abstract}
+We establish explicit common-rectangle obstructions for representing flat unitary matrices (including complex Fourier and Hadamard matrices) and exact-field Fourier matrices as additive combinations of \emph{independently routed} matrix inverses together with sparse, diagonal, and low-rank corrections. All bounds are completely independent of coefficient magnitudes and condition numbers, and allow unrelated left and right endpoint permutations, zero endpoint weights, disconnected denominator supports, and unbounded denominator row degrees.
+
+First, over $\C$, consider
+\[
+M = \delta D + E + K + \sum_{i=1}^r L_i Q_i^{-1} R_i,\qquad d = s + 1 + \delta,
+\]
+where $D$ is diagonal, $E$ has at most $s$ nonzeros per row, $\rank K\le t$, $\delta\in\{0,1\}$, each $L_i,R_i$ has permutation-contained support, and each invertible $Q_i$ has marked weighted half-separators of size at most $q$ in its symmetric bipartite support lift. Using a two-color $1/3$-retention separator lemma and the swapped complementary inverse-rank theorem, we prove that exact equality $U=M$ to any normalized flat unitary $U$ forces
+\[
+N \le d^2(qr+t)9^r + dq(3^r - 1) + 2(d - 1),
+\]
+implying $r=\Omega(\log N)$ for fixed $(q,s,t)$, together with explicit nonvanishing asymptotic operator-norm and relative Frobenius error floors $(d3^r)^{-1/2}$ and $(d3^r)^{-1}$ for fixed $r$. Second, we prove that every invertible matrix $Q$ with at most two nonzeros per column has a pseudoforest bipartite lift and admits a weighted $2$-vertex half-separator ($q=2$, or $q=1$ for forest lifts). Third, over \emph{any} field $\F$ (including positive characteristic and composite orders) containing an element $\omega$ of exact multiplicative order $N$, we prove via disjoint-support tree nullspaces and consecutive-row Vandermonde minors that representing $F_{ab}=\omega^{ab}$ as $S+\sum_{i=1}^r L_i Q_i^{-1} R_i$ with invertible column-two denominators and row-degree-$\delta_0$ summand $S$ forces $N \le \delta_0(r+1) + r(r+1)^r$.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction and main results}
+\label{sec:intro}
+
+Structured linear algebra frequently represents dense operators through sums of inverses of sparse or rank-structured matrices, such as sequentially or hierarchically semiseparable matrices, tree quasiseparable (TQS) representations~\cite{GCD25}, and graph-induced rank structures (GIRS)~\cite{CEG19}. In those frameworks, addition and inversion are closed when all summands share a compatible underlying graph or tree partition. A natural structural question is what happens when $r$ sparse-inverse branches are combined additively under \emph{completely unrelated} left and right coordinate permutations, augmented by sparse and low-rank corrections, and asked to represent a normalized flat unitary or a Fourier matrix.
+
+Write $[N] = \{0,\ldots,N-1\}$ ($N\ge 1$), and for subsets $A,B\subseteq[N]$ denote by $M[A,B]$ the induced submatrix. A matrix has \emph{permutation-contained support} if its support lies inside a permutation matrix (equivalently, it is a diagonal matrix---possibly singular---times a permutation matrix). For each routed branch $B_i = L_i Q_i^{-1} R_i$, pick permutations $p_i,s_i\in S_N$ and weights $\ell_{i,a},\rho_{i,b}$ so that $L_i[a,p_i(a)]=\ell_{i,a}$ and $R_i[s_i(b),b]=\rho_{i,b}$, giving
+\begin{equation}
+\label{eq:routed-entry}
+B_i[a,b] = \ell_{i,a}\,\rho_{i,b}\,(Q_i^{-1})[p_i(a),s_i(b)].
+\end{equation}
+The $2r$ permutations $(p_i,s_i)_{i=1}^r$ are arbitrary and unrelated; denominators, endpoint weights, and permutations may all depend on $N$, with unrestricted magnitudes and condition numbers.
+
+For any invertible $N\times N$ matrix $Q$, define its symmetric bipartite support lift
+\begin{equation}
+\label{eq:bipartite-lift}
+H_Q = \begin{pmatrix} 0 & Q \\ Q^T & 0 \end{pmatrix},\qquad
+H_Q^{-1} = \begin{pmatrix} 0 & Q^{-T} \\ Q^{-1} & 0 \end{pmatrix},
+\end{equation}
+whose undirected support graph $G(H_Q)$ has an upper vertex for each row of $Q$ and a lower vertex for each column of $Q$ (using ordinary transpose, not conjugate transpose).
+
+\begin{definition}[Marked weighted half-separator hypothesis]
+\label{def:marked-sep}
+Let $q\ge 1$ be an integer. A routed branch $B_i = L_i Q_i^{-1} R_i$ with permutations $p_i,s_i$ satisfies the \emph{marked weighted half-separator hypothesis with parameter $q$} if, for every equal-size pair $A,B\subseteq[N]$, marking the lower vertices $p_i(A)$ red and the upper vertices $s_i(B)$ blue (unit weight on each marked vertex, even when the corresponding endpoint weight vanishes; weight $0$ elsewhere), there exists a vertex set $X_i\subseteq V(G(H_{Q_i}))$ of size $|X_i|\le q$ whose deletion leaves every connected component of $G(H_{Q_i})\setminus X_i$ with at most half the total marked weight $|A|+|B|$.
+\end{definition}
+
+Note that having a weighted half-separator of size at most $q$ for \emph{every} nonnegative vertex weighting (in particular, having treewidth at most $q-1$) automatically implies Definition~\ref{def:marked-sep}. Separators and component groupings may vary independently across branches and across steps.
+
+A complex $N\times N$ matrix $U$ is a \emph{normalized flat unitary} if $U^*U = I_N$ and $|U_{ab}| = N^{-1/2}$ for all $a,b\in[N]$ (covering all normalized discrete Fourier matrices and all normalized complex Hadamard matrices). Our first main theorem gives an explicit size cutoff and quantitative approximation floors in the complex model.
+
+\begin{theorem}[Complex corrected routed-inverse obstruction]
+\label{thm:complex-routed}
+Let $q,r\ge 1$, $s,t\ge 0$, $\delta\in\{0,1\}$, and $d = s + 1 + \delta$. Let $U\in\C^{N\times N}$ be a normalized flat unitary, and consider
+\begin{equation}
+\label{eq:complex-model}
+M = \delta D + E + K + \sum_{i=1}^r L_i Q_i^{-1} R_i,
+\end{equation}
+where $D$ is diagonal, every row of $E$ has at most $s$ nonzeros, $\rank K\le t$, each $L_i,R_i$ has permutation-contained support~\eqref{eq:routed-entry}, and each invertible $Q_i$ satisfies Definition~\ref{def:marked-sep} with parameter $q$.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item \emph{(Exact size cutoff)} If $U = M$, then
+\begin{equation}
+\label{eq:complex-cutoff}
+N \le d^2(qr + t)9^r + dq(3^r - 1) + 2(d - 1).
+\end{equation}
+In particular, for fixed $(q,s,t)$, exact equality forces $r = \Omega(\log N)$.
+\item \emph{(Quantitative approximation floors)} Define $m_0 = \lfloor N/d\rfloor$ and $m_{j+1} = \lceil(m_j - q)/3\rceil$ ($0\le j<r$). Whenever $m_j\ge 4q$ for every $0\le j<r$ (which holds automatically if $N$ exceeds the right-hand side of~\eqref{eq:complex-cutoff}), putting $m = m_r$ and $R = qr + t$,
+\begin{equation}
+\label{eq:complex-floors}
+\|U - M\|_F^2 \ge \max\!\left(0,\; \frac{m^2}{N} - R\right),\qquad
+\|U - M\|_2^2 \ge \max\!\left(0,\; \frac{m^2/N - R}{m - R}\right)\quad (m > R).
+\end{equation}
+For fixed $(q,r,s,t,\delta)$ as $N\to\infty$, uniformly over all admissible matrices and routes,
+\begin{equation}
+\label{eq:asymp-floors}
+\liminf_{N\to\infty}\|U - M\|_2 \ge (d3^r)^{-1/2},\qquad
+\liminf_{N\to\infty}\frac{\|U - M\|_F}{\|U\|_F} \ge (d3^r)^{-1}.
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+An important concrete denominator class is the family of invertible \emph{column-two} matrices (at most two nonzero entries per column, with unrestricted row degrees, multiple components, and singleton columns permitted---including every invertible weighted-permutation Green matrix $I - W$).
+
+\begin{theorem}[Column-two denominators permit $q=2$]
+\label{thm:col2-sep}
+Let $Q$ be an invertible $N\times N$ matrix over any field such that every column of $Q$ contains at most two nonzero entries. Then the symmetric bipartite support lift $G(H_Q)$ is a pseudoforest (every connected component is a tree or unicyclic), and for every nonnegative vertex weighting of $G(H_Q)$ there exists a vertex separator of size at most $2$ (at most $1$ if $G(H_Q)$ is a forest) whose removal leaves every component with at most half the total weight. Consequently, Theorem~\ref{thm:complex-routed} applies with $q=2$ to every invertible column-two denominator.
+\end{theorem}
+
+Over arbitrary fields (including positive characteristic and composite orders $N$, where complex positivity and singular values are unavailable), a completely different mechanism---disjoint-support tree nullspaces giving projective column directions, combined with consecutive-row Vandermonde minors---yields an exact algebraic obstruction.
+
+\begin{theorem}[Exact-field column-two Fourier obstruction]
+\label{thm:field-routed}
+Let $\F$ be any field, let $\omega\in\F^\times$ have exact multiplicative order $N\ge 1$ (so $\operatorname{char}\F\nmid N$), and let $F_{ab}=\omega^{ab}$ ($a,b\in[N]$). Suppose $r\ge 1$, $\delta_0\ge 0$, and
+\begin{equation}
+\label{eq:field-model}
+F = S + \sum_{i=1}^r L_i Q_i^{-1} R_i,
+\end{equation}
+where every row of $S$ has at most $\delta_0$ nonzeros, each $L_i,R_i$ has permutation-contained support~\eqref{eq:routed-entry}, and each $Q_i$ is invertible with at most two nonzero entries in every column. Then
+\begin{equation}
+\label{eq:field-cutoff}
+N \le \delta_0(r + 1) + r(r + 1)^r.
+\end{equation}
+In particular, for fixed $\delta_0$, exact representation forces $r = \Omega(\log N / \log\log N)$, and two uncorrected branches ($\delta_0=0, r=2$) are impossible for all $N\ge 19$.
+\end{theorem}
+
+The paper is organized as follows. Section~\ref{sec:ordered} records the simpler ordered-separation mechanism (Theorem~\ref{thm:ordered}) and its application to weighted directed cycles. Section~\ref{sec:rank-spec} establishes the swapped complementary inverse-rank identity and flat-unitary spectral comparisons. Section~\ref{sec:complex} proves the two-color $1/3$-retention lemma, sparse elimination, Theorem~\ref{thm:complex-routed}, and diagonal target-scaling transfers. Section~\ref{sec:col2} proves Theorem~\ref{thm:col2-sep} via weighted pseudoforest centroids. Section~\ref{sec:field} proves the exact-field projective-direction lemma and Theorem~\ref{thm:field-routed}. Section~\ref{sec:prior} compares these results with prior literature on nullity theorems, GIRS/TQS rank structures, and frame matrices, and states open problems.
+
+\section{Common rectangles from ordered separation}
+\label{sec:ordered}
+
+Before introducing general graph separators, we record an elementary ordered-separation mechanism that achieves a sharper $2^{-h}$ retention factor whenever branches carry compatible global row/column orderings (such as disjoint unions of weighted directed cycles).
+
+\begin{theorem}[Independently ordered common rectangle]
+\label{thm:ordered}
+Let $b\ge 1$ and $\rho_1,\ldots,\rho_b\ge 0$ be integers. For $1\le i\le b$, let $B_i$ be an $N\times N$ matrix over any field and let $a_i,c_i:[N]\to[N]$ be bijections such that $\rank B_i[A,B]\le\rho_i$ whenever nonempty $A,B\subseteq[N]$ are strictly separated in either orientation:
+\[
+\max a_i(A) < \min c_i(B)\qquad\text{or}\qquad \max c_i(B) < \min a_i(A).
+\]
+Let $h$ be the number of distinct ordered pairs $(a_i,c_i)$, $R_O = \sum_{i=1}^b \rho_i$, and $m = \lfloor N/2^h\rfloor$. Then there exist subsets $A,B\subseteq[N]$ of size $|A|=|B|=m$ such that $\rank\bigl(\sum_{i=1}^b B_i\bigr)[A,B]\le R_O$.
+\end{theorem}
+
+\begin{proof}
+Process the $h$ distinct order pairs $(a,c)$ sequentially. Starting from equal-size sets $A,B$ with $|A|=|B|=n\ge 2$, set $u=\lfloor n/2\rfloor$, partition $A$ into its $u$ lowest and $u$ highest elements under $a$ ($A_{\mathrm{lo}}, A_{\mathrm{hi}}$, discarding the middle element if $n$ is odd), and similarly $B_{\mathrm{lo}},B_{\mathrm{hi}}$ under $c$. If $\max a(A_{\mathrm{lo}}) < \min c(B_{\mathrm{hi}})$, retain $(A_{\mathrm{lo}}, B_{\mathrm{hi}})$. Otherwise, we claim $\max c(B_{\mathrm{lo}}) < \min a(A_{\mathrm{hi}})$: if that failed too, we would obtain the strict cycle
+\[
+\max a(A_{\mathrm{lo}}) \ge \min c(B_{\mathrm{hi}}) > \max c(B_{\mathrm{lo}}) \ge \min a(A_{\mathrm{hi}}) > \max a(A_{\mathrm{lo}}),
+\]
+a contradiction. Thus one orientation yields strictly separated subsets of size $\lfloor n/2\rfloor$. Strict separation persists under taking subsets, and repeated floor-halving produces final size $\lfloor N/2^h\rfloor$ (if size reaches $0$ or $1$ before all pairs are processed, the final size is $0$ and empty sets suffice). Rank subadditivity gives $\rank(\sum_i B_i)[A,B]\le \sum_i \rho_i = R_O$.
+\end{proof}
+
+\begin{example}[Weighted cycle Green inverses]
+Let $W$ be supported on a directed Hamiltonian cycle $(v_0,v_1,\ldots,v_{N-1})$ with weights $W[v_j,v_{j+1}]=w_j$ (indices mod $N$) and cycle product $\lambda=\prod_j w_j \neq 1$. Then $W^N = \lambda I$ and
+\[
+(I - W)^{-1} = \frac{I + W + \cdots + W^{N-1}}{1 - \lambda}.
+\]
+Each entry is the directed arc product divided by $1-\lambda$, which factors into a row weight times a column weight across any cut separating $A$ and $B$ (even when some edge weights $w_j$ vanish, as no individual edge weight is inverted). Thus every strictly separated rectangle has rank at most $1$; independent permutations $L_i,R_i$ transport the two orders separately. Direct sums of disjoint cycles enjoy the same property under concatenated cycle orders (at most one cycle crosses a cut), whereas attached trees and unbounded row degrees genuinely require the pseudoforest separator machinery of Sections~\ref{sec:complex}--\ref{sec:col2}.
+\end{example}
+
+Combining Theorem~\ref{thm:ordered} with Lemma~\ref{lem:flat-spec} proved next immediately yields the following spectral corollary.
+
+\begin{corollary}
+\label{cor:ordered-spec}
+In the setting of Theorem~\ref{thm:ordered} over $\C$, for any normalized flat unitary $U$ and $T = \sum_{i=1}^b B_i$, equality $U=T$ forces $m^2\le N R_O$, and for $m>0$,
+\[
+\|U - T\|_F^2 \ge \max\!\left(0,\; \frac{m^2}{N} - R_O\right),\qquad
+\|U - T\|_2^2 \ge \max\!\left(0,\; \frac{m}{N} - \frac{R_O}{m}\right).
+\]
+\end{corollary}
+
+\section{Complementary inverse ranks and flat-unitary spectral bounds}
+\label{sec:rank-spec}
+
+\begin{lemma}[Swapped complementary inverse rank and separator bound]
+\label{lem:nullity}
+Let $A$ be an invertible $n\times n$ matrix over any field.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item For arbitrary index sets $I,J\subseteq[n]$,
+\begin{equation}
+\label{eq:nullity}
+\rank A^{-1}[I,J] = \rank A[J^c, I^c] + |I| + |J| - n.
+\end{equation}
+\item Suppose $A$ has symmetric support graph $G(A)$, and a vertex separator $X\subseteq[n]$ partitions $[n]\setminus X$ into disjoint unions of components $V_1,V_2$ with no edges between $V_1$ and $V_2$ (so $A[V_1,V_2]=0$). Then
+\begin{equation}
+\label{eq:sep-rank}
+\rank A^{-1}[V_1,V_2] \le |X|,
+\end{equation}
+and symmetrically $\rank A^{-1}[V_2,V_1]\le |X|$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+For~(a), let $y$ be supported on $J$ and put $z = A^{-1}y$. The condition $z|_I = 0$ (i.e., $y\in\ker A^{-1}[I,J]$) holds if and only if $z$ is supported on $I^c$ and $(Az)|_{J^c}=0$ (i.e., $z\in\ker A[J^c,I^c]$). Because $A$ is invertible, $y\mapsto z$ is a bijection between these two kernels; applying rank--nullity to domains of dimensions $|J|$ and $n-|I|$ gives $|J| - \rank A^{-1}[I,J] = (n-|I|) - \rank A[J^c,I^c]$, proving~\eqref{eq:nullity} (cf.~\cite[Corollary~1]{VV04}).
+
+For~(b), since $V_2^c = V_1\cup X$ and $V_1^c = V_2\cup X$, the block $A[V_2^c,V_1^c] = A[V_1\cup X, V_2\cup X]$ vanishes on $V_1\times V_2$, so every nonzero entry lies in the $|X|$ rows of $X$ or the $|X|$ columns of $X$; hence $\rank A[V_2^c,V_1^c]\le 2|X|$. Because $|V_1|+|V_2|=n-|X|$, equation~\eqref{eq:nullity} yields $\rank A^{-1}[V_1,V_2]\le 2|X| - |X| = |X|$. Applying~\eqref{eq:sep-rank} to the bipartite lift $H_Q$ in~\eqref{eq:bipartite-lift} and restricting to lower rows and upper columns gives $\rank Q^{-1}[A',B']\le |X|$ whenever $A'$ (lower vertices) and $B'$ (upper vertices) lie in opposite sides of $G(H_Q)\setminus X$; endpoint permutations and scalings (even zero scalings) cannot increase rank.
+\end{proof}
+
+\begin{lemma}[Flat-unitary low-rank rectangle comparison]
+\label{lem:flat-spec}
+Let $U\in\C^{N\times N}$ be a normalized flat unitary, let $A,B\subseteq[N]$ have $|A|=|B|=m$, and put $V = U[A,B]$. Then
+\begin{equation}
+\label{eq:flat-basic}
+\|V\|_F^2 = \frac{m^2}{N},\qquad \|V\|_2\le 1,\qquad \rank V \ge \frac{m^2}{N}.
+\end{equation}
+If $M\in\C^{N\times N}$ satisfies $\rank M[A,B]\le R$ for an integer $R\ge 0$, then
+\begin{equation}
+\label{eq:flat-frob}
+\|U - M\|_F^2 \ge \max\!\left(0,\; \frac{m^2}{N} - R\right),
+\end{equation}
+and whenever $m > R$,
+\begin{equation}
+\label{eq:flat-op}
+\|U - M\|_2^2 \ge \max\!\left(0,\; \frac{m^2/N - R}{m - R}\right).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Flatness gives $\|V\|_F^2 = m^2/N$, and coordinate restriction of a unitary gives $\|V\|_2\le 1$; hence $\sum_{j=1}^{\rank V}\sigma_j(V)^2 = m^2/N \le \rank V$, proving~\eqref{eq:flat-basic}. Put $W = M[A,B]$. Projecting onto the orthogonal complement of the column space of $W$ shows $\|V-W\|_F^2 \ge \sum_{j=R+1}^m \sigma_j(V)^2 = \|V\|_F^2 - \sum_{j=1}^R \sigma_j(V)^2 \ge m^2/N - R$, and coordinate restriction gives $\|U-M\|_F\ge \|V-W\|_F$, proving~\eqref{eq:flat-frob}.
+
+For~\eqref{eq:flat-op} with $m > R$, set $\varepsilon = \|V - W\|_2\le \|U - M\|_2$. The $(R+1)$-dimensional span of the top $R+1$ right singular vectors of $V$ intersects $\ker W$ in a unit vector $x$, giving $\sigma_{R+1}(V)\le \|Vx\|_2 = \|(V-W)x\|_2\le \varepsilon$. Consequently every tail singular value $\sigma_{R+1}(V),\ldots,\sigma_m(V)$ is at most $\varepsilon$, so
+\[
+\frac{m^2}{N} = \sum_{j=1}^R \sigma_j(V)^2 + \sum_{j=R+1}^m \sigma_j(V)^2 \le R + (m - R)\varepsilon^2,
+\]
+proving~\eqref{eq:flat-op}. (The weaker operator bound in Corollary~\ref{cor:ordered-spec} also follows directly from~\eqref{eq:flat-frob} via $\|V-W\|_F^2 \le m\|V-W\|_2^2$.)
+\end{proof}
+
+\section{Two-color separator selection and the complex corrected theorem}
+\label{sec:complex}
+
+\begin{lemma}[Two-color $1/3$-retention separator lemma]
+\label{lem:two-color}
+Suppose a routed branch $B_i = L_i Q_i^{-1} R_i$ satisfies Definition~\ref{def:marked-sep} with parameter $q\ge 1$. For any target subsets $A,B\subseteq[N]$ of equal size $m\ge 4q$, there exist subsets $A'\subseteq A$ and $B'\subseteq B$ of equal size
+\begin{equation}
+\label{eq:third-step}
+m' = \left\lceil\frac{m - q}{3}\right\rceil
+\end{equation}
+such that $\rank B_i[A',B']\le q$.
+\end{lemma}
+
+\begin{proof}
+Mark $p_i(A)$ red (lower vertices) and $s_i(B)$ blue (upper vertices) in $G(H_{Q_i})$, total marked weight $2m$, and delete a half-separator $X$ with $|X|\le q$. Each color loses at most $q$ vertices, leaving at least $u := m - q$ marks of each color; discard arbitrary excess marks of each color so exactly $u$ red and $u$ blue marks remain (total retained weight $2u$). Every component of $G(H_{Q_i})\setminus X$ contains at most $m$ retained marks; since $m\ge 4q$, we have $q\le m/4$ and therefore
+\[
+m = \frac{4}{3}(m - m/4) \le \frac{4}{3}(m - q) = \frac{4u}{3}.
+\]
+Group the components of $G(H_{Q_i})\setminus X$ into two disjoint unions $V_1,V_2$ whose retained weights both lie in $[2u/3,\, 4u/3]$: if some component has retained weight at least $2u/3$, take it as $V_1$ (its weight is at most $m\le 4u/3$); otherwise greedily add components to $V_1$ until its weight first reaches $2u/3$ (it remains strictly below $4u/3$ since each added component weighs less than $2u/3$). Place unmarked components arbitrarily.
+
+Let $V_1$ contain $a$ red and $b$ blue retained marks, so $V_2$ contains $u-a$ red and $u-b$ blue retained marks, with $2u/3\le a+b\le 4u/3$. We claim that at least one of the two oriented cross pairs $(a,u-b)$ or $(u-a,b)$ has both entries at least $u/3$. Indeed, if both failed, then $(a < u/3 \text{ or } u-b < u/3)$ and $(u-a < u/3 \text{ or } b < u/3)$, giving four cases:
+\begin{itemize}[leftmargin=1.5em]
+\item $a < u/3$ and $u-a < u/3 \implies u < 2u/3$, impossible;
+\item $u-b < u/3$ and $b < u/3 \implies u < 2u/3$, impossible;
+\item $a < u/3$ and $b < u/3 \implies a+b < 2u/3$, contradicting $a+b\ge 2u/3$;
+\item $u-b < u/3$ and $u-a < u/3 \implies a+b > 4u/3$, contradicting $a+b\le 4u/3$.
+\end{itemize}
+Because counts are integers, the winning cross pair yields subsets $A'\subseteq A$ and $B'\subseteq B$ of size $\lceil u/3\rceil = m'$ lying on opposite sides $V_1,V_2$ of $G(H_{Q_i})\setminus X$. By Lemma~\ref{lem:nullity}(b), $\rank B_i[A',B']\le |X|\le q$.
+\end{proof}
+
+\begin{remark}
+The $1/3$ retention fraction is sharp given only component red/blue counts: when $3\mid u$, three components each holding $(u/3,u/3)$ red/blue marks allow no partition with cross minimum above $u/3$.
+\end{remark}
+
+\begin{lemma}[Elimination of row-sparse and diagonal corrections]
+\label{lem:sparse-elim}
+In~\eqref{eq:complex-model}, set $d = s + 1 + \delta$ and $p = \lfloor N/d\rfloor$. There exist subsets $A_0,B_0\subseteq[N]$ of size $|A_0|=|B_0|=p$ on which $E[A_0,B_0] = 0$ and $\delta D[A_0,B_0] = 0$, while $\rank K[A_0,B_0]\le t$.
+\end{lemma}
+
+\begin{proof}
+Choose any $p$ rows $A_0\subseteq[N]$. The union of column supports of $E$ in rows $A_0$ (plus $A_0$ itself if $\delta=1$) has size at most $(s+\delta)p = (d-1)p$. Since $N - (d-1)p \ge dp - (d-1)p = p$, select $p$ columns $B_0$ outside this union. Both $E$ and $\delta D$ vanish on $A_0\times B_0$, using only the per-row degree bound on $E$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:complex-routed}]
+Begin with the $p\times p$ rectangle $A_0\times B_0$ from Lemma~\ref{lem:sparse-elim} ($m_0 = p = \lfloor N/d\rfloor$), and define $m_{j+1} = \lceil(m_j - q)/3\rceil$ for $0\le j<r$. Whenever $m_j\ge 4q$ for every $0\le j<r$, iterating Lemma~\ref{lem:two-color} over the $r$ branches produces nested subsets $A_r\subseteq\cdots\subseteq A_0$ and $B_r\subseteq\cdots\subseteq B_0$ of size $m=m_r$ on which each $B_i$ has rank at most $q$, $E+\delta D$ vanishes, and $K$ has rank at most $t$. By rank subadditivity, $\rank M[A_r,B_r]\le R := qr + t$. Applying Lemma~\ref{lem:flat-spec} immediately proves~\eqref{eq:complex-floors}.
+
+By induction on $j$, dropping ceilings in $m_{j+1}\ge (m_j - q)/3$ yields
+\begin{equation}
+\label{eq:mj-lb}
+m_j \ge \frac{p}{3^j} - \frac{q}{2}(1 - 3^{-j})\qquad (0\le j\le r).
+\end{equation}
+Put $a = 3^r$, $c = (d-1) + \frac{dq(a-1)}{2}$, and $B = d^2 R a^2$. Notice that
+\[
+B + 2c = d^2(qr + t)9^r + dq(3^r - 1) + 2(d - 1),
+\]
+which is the right-hand side of~\eqref{eq:complex-cutoff}.
+
+Suppose for contradiction that $N > B + 2c$. We first verify non-circular legality $m_j\ge 4q$ at every stage $0\le j\le r-1$: using $p \ge (N - d + 1)/d$, $N > B = d^2 R 3^{2r}$, $d\ge 1$, $R\ge qr\ge q$, and $2r - j \ge r + 1\ge 2$, equation~\eqref{eq:mj-lb} gives
+\[
+m_j \ge \frac{N - d + 1}{d 3^j} - \frac{q}{2}(1 - 3^{-j})
+> d R 3^{2r - j} - 1 - \frac{q}{2}
+\ge 9q - 1 - \frac{q}{2} \ge 4q
+\]
+for every integer $q\ge 1$ (since $9q - 1 - q/2 - 4q = \frac{9}{2}q - 1 > 0$). Thus all $r$ separator steps are legal.
+
+At the final stage $j=r$,~\eqref{eq:mj-lb} and $p\ge (N-d+1)/d$ yield
+\[
+m = m_r \ge \frac{N - d + 1}{da} - \frac{q(a - 1)}{2a} = \frac{N - c}{da} > 0
+\]
+(as $N > 2c\ge c$). If $U = M$, Lemma~\ref{lem:flat-spec} forces $m^2 \le NR$, whence $(N - c)^2 \le N d^2 R a^2 = NB$. However,
+\[
+(N - c)^2 - NB = N\bigl(N - (B + 2c)\bigr) + c^2 > 0,
+\]
+a contradiction. This proves~\eqref{eq:complex-cutoff}. For fixed $(q,s,t,\delta)$, the right-hand side of~\eqref{eq:complex-cutoff} is $O(r9^r)$, so taking logarithms and using $\log r\le r$ gives $r = \Omega(\log N)$.
+
+Finally, for fixed $(q,r,s,t,\delta)$ as $N\to\infty$,~\eqref{eq:complex-floors} and~\eqref{eq:mj-lb} (together with $m_r \le p/3^r + O(1)$) yield $m_r/N\to \alpha := (d3^r)^{-1}$; dividing~\eqref{eq:complex-floors} by $\|U\|_F^2 = N$ and taking limits establishes~\eqref{eq:asymp-floors}.
+\end{proof}
+
+\begin{remark}[Specializations and diagonal target scaling]
+\label{rem:scaling}
+Setting $s=t=\delta=0$ in~\eqref{eq:complex-cutoff} yields $N\le qr 9^r + q(3^r-1)$; adding only a free diagonal ($\delta=1$) yields $N\le 4qr 9^r + 2q(3^r-1) + 2$; and $(q,r,s,t,\delta)=(2,2,1,1,1)$ yields $N\le 3697$. Moreover, if the target is diagonally scaled as $A = D_L U D_R$ with invertible diagonals $D_L,D_R$, setting $\widetilde{M} = D_L^{-1} M D_R^{-1}$ preserves all endpoint, row-degree, diagonal, and rank-correction hypotheses; thus~\eqref{eq:complex-cutoff} transfers verbatim, and every norm lower bound scales by $d_{\min} e_{\min}$ where $d_{\min}=\min_a |D_L[a,a]|$ and $e_{\min}=\min_b |D_R[b,b]|$.
+\end{remark}
+
+\section{Tree decompositions and column-two pseudoforest separators}
+\label{sec:col2}
+
+Before proving Theorem~\ref{thm:col2-sep}, observe that any graph $G$ of treewidth at most $q-1$ admits a tree decomposition with bags of size at most $q$; assigning each vertex's nonnegative weight to one bag containing it and deleting a weighted centroid bag (reached by walking along edges toward any component exceeding half the total weight) leaves every remaining component with weight at most half the total~\cite[Section~2.1]{BDDFLP16}, supplying Definition~\ref{def:marked-sep} with parameter $q$.
+
+\begin{lemma}[Pseudoforest structure of invertible column-two matrices]
+\label{lem:col2-pf}
+Let $Q$ be an invertible $N\times N$ matrix over any field in which every column has at most two nonzero entries.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item Form the row-support multigraph $\Gamma(Q)$ with vertex set $[N]$ (rows of $Q$), a labeled edge $\{u,v\}$ for each column supported on $\{u,v\}$ ($u\neq v$), and a labeled loop at $u$ for each singleton column supported on $\{u\}$. Every connected component $C$ of $\Gamma(Q)$ satisfies $|E(C)| = |V(C)|$, and is therefore unicyclic (including loops and parallel pairs).
+\item The symmetric bipartite support lift $G(H_Q)$ is a pseudoforest: every connected component is either a tree or a unicyclic graph.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Because $Q$ is invertible, no column is zero, so $\Gamma(Q)$ has $N$ edges and $N$ vertices. For any connected component $C$ of $\Gamma(Q)$, the columns corresponding to $E(C)$ are linearly independent and supported inside the $|V(C)|$ rows of $V(C)$, forcing $|E(C)|\le |V(C)|$. Summing over all components gives $N = \sum_C |E(C)| \le \sum_C |V(C)| = N$, so $|E(C)| = |V(C)|$ for every component $C$, proving~(a). In the bipartite lift $G(H_Q)$, every two-entry column subdivides its edge in $\Gamma(Q)$ by inserting one column vertex of degree $2$, while every singleton column replaces its loop by a leaf of degree $1$. Subdividing an edge preserves the unicyclic property, and replacing the unique loop of a unicyclic component by a pendant leaf turns that component into a tree. Hence every component of $G(H_Q)$ is a tree or unicyclic.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:col2-sep}]
+By Lemma~\ref{lem:col2-pf}, $G(H_Q)$ is a pseudoforest. Assign arbitrary nonnegative weights to $V(G(H_Q))$ with total weight $W$. If $W=0$ or every component has weight at most $W/2$, the empty separator works. Otherwise there is a unique heavy component $C$ of weight $> W/2$.
+
+If $C$ is a tree, a standard weighted tree centroid (single vertex $z\in V(C)$) separates $C$ into components each of weight at most $w(C)/2 \le W/2$, giving $|X|=1$.
+
+Suppose $C$ is unicyclic. For each vertex $v$ on the unique cycle of $C$, let $T_v$ be the maximal attached tree rooted at $v$ (containing $v$ and disjoint from the rest of the cycle), with total weight $w_v$.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Case 1: Some $w_v > W/2$.} Form an augmented tree on $T_v$ by adding the outside weight $W - w_v$ onto the root $v$, and choose a weighted centroid $z\in V(T_v)$ of total weight $W$. If $z\neq v$, deleting $z$ from $G(H_Q)$ leaves the part containing $v$ reconnected to the rest of the cycle, with actual weight at most the augmented component's weight $\le W/2$, while every other detached part of $T_v$ has the same weight $\le W/2$. If $z=v$, deleting $v$ leaves the cycle remainder of weight $w(C) - w_v \le W - w_v < W/2$ and detached branches of $T_v$ each of weight $\le W/2$. Thus $X=\{z\}$ suffices.
+\item \emph{Case 2: Every $w_v \le W/2$.} Delete any single cycle vertex $x$. Aggregate the weight of each remaining attached tree $T_v$ ($v\neq x$) onto its cycle vertex $v$, producing a weighted path of total weight $W' \le W$. Pick a weighted centroid $y$ of this path (any path vertex if $W'=0$). Deleting $X = \{x,y\}$ splits the path into two sides each of weight at most $W'/2 \le W/2$, while every tree branch detached at $x$ or $y$ has weight at most $w_x\le W/2$ or $w_y\le W/2$.
+\end{itemize}
+In every case $|X|\le 2$ (and $|X|\le 1$ when $G(H_Q)$ is a forest), establishing Definition~\ref{def:marked-sep} with $q=2$ and proving Theorem~\ref{thm:col2-sep}.
+\end{proof}
+
+\section{Exact-field projective directions and column-two Fourier obstruction}
+\label{sec:field}
+
+Over arbitrary fields $\F$ (including finite fields and characteristic $2$), complex positivity is unavailable. Instead, invertible column-two matrices exhibit a rigid projective-direction property on any $k$ rows of their inverse.
+
+\begin{lemma}[Inverse-row projective directions for column-two matrices]
+\label{lem:proj-dir}
+Let $Q$ be an invertible $N\times N$ column-two matrix over \emph{any} field $\F$, and let $J\subseteq[N]$ have size $1\le k\le N$. Then the nonzero columns of $A := Q^{-1}[J,\,{:}]$ lie in at most (in fact, exactly) $k$ one-dimensional subspaces of $\F^k$, spanned by $k$ linearly independent vectors.
+\end{lemma}
+
+\begin{proof}
+Delete the $k$ column-labeled edges indexed by $J$ from the row-support multigraph $\Gamma(Q)$ of Lemma~\ref{lem:col2-pf}(a), forming a spanning subgraph $\Gamma_J$ on $[N]$ with $N-k$ edges. Because every component of $\Gamma(Q)$ was unicyclic, every component $C$ of $\Gamma_J$ is either a tree ($|V(C)| - |E(C)| = 1$, including isolated vertices) or unicyclic ($|V(C)| - |E(C)| = 0$). Summing over all components gives
+\[
+\#\{\text{tree components of }\Gamma_J\} = \sum_C\bigl(|V(C)| - |E(C)|\bigr) = N - (N - k) = k.
+\]
+Put $B = Q[{:},\, J^c]\in\F^{N\times(N-k)}$. Since $Q$ is invertible, the columns of $B$ are linearly independent, and they partition cleanly across the connected components of $\Gamma_J$. On a unicyclic component $C$, the $|V(C)|$ columns of $B$ supported on $V(C)$ form a nonsingular square block, so local left nullity is $0$; on a tree component $C$, the $|V(C)| - 1$ columns supported on $V(C)$ have rank $|V(C)| - 1$, so the local left nullspace is $1$-dimensional. Consequently, the full left nullspace
+\[
+\mathcal{W} = \{x\in\F^{1\times N} : xB = 0\}
+\]
+is the direct sum of $k$ one-dimensional subspaces supported on the $k$ disjoint tree vertex sets $V(T_1),\ldots,V(T_k)$.
+
+Because $Q^{-1}Q = I_N$, the $k$ rows of $A = Q^{-1}[J,\,{:}]$ are linearly independent and satisfy $AB = 0$, hence form a basis of $\mathcal{W}$. Pick one nonzero local null vector $h_u\in\F^{1\times N}$ supported on $V(T_u)$ for each $1\le u\le k$, and stack them into $H\in\F^{k\times N}$. Then there is an invertible $k\times k$ matrix $C$ with $A = CH$. Every column $b$ belonging to a unicyclic component of $\Gamma_J$ is zero in $A$; every column $b\in V(T_u)$ is a scalar multiple of the $u$-th column $C[{:},u]$ of $C$. Since each $h_u$ has at least one nonzero entry, all $k$ independent directions $C[{:},1],\ldots,C[{:},k]$ appear among the columns of $A$. Note that no division by an edge weight or characteristic-$2$ restriction is used.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:field-routed}]
+If $r\ge N$, inequality~\eqref{eq:field-cutoff} holds trivially (since $r(r+1)^r \ge r\ge N$). Assume therefore $1\le r < N$, and set $k = r + 1\le N$. Restrict~\eqref{eq:field-model} to the $k$ consecutive rows $A_0 = \{0,1,\ldots,k-1\}$ of $F$.
+
+At most $\delta_0 k$ columns contain a nonzero entry of $S$ in rows $A_0$; discard these columns, leaving a column set $B_{\mathrm{surv}}$ of size $|B_{\mathrm{surv}}| \ge N - \delta_0 k$.
+
+For each routed branch $B_i = L_i Q_i^{-1} R_i$ ($1\le i\le r$), restricting to rows $A_0$ selects $k$ distinct rows of $Q_i^{-1}$ via $p_i(A_0)$, multiplied on the left by diagonal entries $\ell_{i,a}$ and permuted/scaled on the right by $R_i$. By Lemma~\ref{lem:proj-dir}, the columns of $B_i[A_0,\,{:}]$ partition into at most $k$ classes, each spanning a subspace of dimension at most $1$ (absorbing any zero columns into an arbitrary class). Taking the common refinement of these $r$ column partitions across $B_{\mathrm{surv}}$ produces at most $k^r$ cells. On any single cell $\mathcal{C}\subseteq B_{\mathrm{surv}}$, each branch $B_i[A_0,\mathcal{C}]$ has rank at most $1$, so by rank subadditivity,
+\[
+\rank F[A_0,\mathcal{C}] = \rank\Bigl(\sum_{i=1}^r B_i[A_0,\mathcal{C}]\Bigr) \le r = k - 1.
+\]
+On the other hand, because $A_0=\{0,\ldots,k-1\}$ consists of $k$ consecutive rows and $\omega$ has exact order $N$, any $k$ distinct columns $b_1,\ldots,b_k\in[N]$ form a $k\times k$ Vandermonde submatrix of $F$ with determinant
+\[
+\prod_{1\le u < v\le k} (\omega^{b_v} - \omega^{b_u}) \neq 0.
+\]
+Hence no cell $\mathcal{C}$ can contain $k$ or more columns: $|\mathcal{C}|\le k - 1 = r$ for every cell. Summing over all at most $k^r$ cells gives $|B_{\mathrm{surv}}|\le r k^r$, and restoring the at most $\delta_0 k$ discarded columns yields
+\[
+N \le \delta_0 k + r k^r = \delta_0(r + 1) + r(r + 1)^r,
+\]
+proving~\eqref{eq:field-cutoff}. Setting $r=2, \delta_0=0$ gives $N\le 2\cdot 3^2 = 18$, excluding $N\ge 19$.
+\end{proof}
+
+\begin{remark}
+Using consecutive rows is essential at composite orders $N$: for example, at $N=4$ over $\F_5$ with primitive $4$-th root $\omega=2$, the non-consecutive minor on rows $\{0,2\}$ and columns $\{0,2\}$ is $\bigl(\begin{smallmatrix}1&1\\1&1\end{smallmatrix}\bigr)$, which is singular. Notice also that Theorem~\ref{thm:field-routed} has no low-rank correction $K$, whereas Theorem~\ref{thm:complex-routed} handles $K$ at the cost of restricting to $\C$. Table~\ref{tab:concordance} summarizes all three mechanisms.
+\end{remark}
+
+\begin{table}[ht]
+\centering
+\caption{Summary of the three common-rectangle obstruction mechanisms in this paper.}
+\label{tab:concordance}
+\begin{tabular}{llll}
+\toprule
+Result & Field & Model & Cutoff / guarantee \\
+\midrule
+Theorem~\ref{thm:ordered} / Cor.~\ref{cor:ordered-spec} & Any / $\C$ & $h$ distinct row/col order pairs, $\sum\rho_i=R_O$ & $m=\lfloor N/2^h\rfloor$, $m^2\le N R_O$ \\
+Theorem~\ref{thm:complex-routed} & $\C$ & $\delta D + E + K + \sum_{i=1}^r L_i Q_i^{-1} R_i$, sep.\ $\le q$ & $N\le d^2(qr+t)9^r + dq(3^r-1)+2(d-1)$ \\
+Theorem~\ref{thm:col2-sep} & Any / $\C$ & Invertible column-two $Q_i$ & Pseudoforest lift $\implies q=2$ ($q=1$ forest) \\
+Theorem~\ref{thm:field-routed} & Any ($\omega$ ord.\ $N$) & $S + \sum_{i=1}^r L_i Q_i^{-1} R_i$, column-two $Q_i$ & $N \le \delta_0(r+1) + r(r+1)^r$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Relation to prior work and open problems}
+\label{sec:prior}
+
+We record the precise relationship between our synthesis and the structured-matrix and matroid literature:
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Nullity theorem and rank-structured graphs:} Lemma~\ref{lem:nullity}(a) is the classical Fiedler--Markham / Gustafson nullity theorem as presented in Vandebril and Van Barel~\cite[Corollary~1]{VV04}. Graph-induced rank structures (GIRS)~\cite[Propositions~2.1--2.3]{CEG19} and tree quasiseparable (TQS) matrices~\cite[Theorem~4.4, Propositions~4.6--4.8]{GCD25} develop inversion and sum/product algebra on a \emph{single} shared graph or compatible tree partition (including distinct left and right block permutations in TQS). Note that GIRS bounds rank via \emph{border edges} rather than vertex separators, which diverge when vertex degrees are unbounded. Our Theorem~\ref{thm:complex-routed} addresses incompatible branch-specific graphs and independent routes simultaneously against a normalized flat unitary.
+\item \emph{Weighted separators and column-two frame matrices:} Weighted half-component separators and greedy component grouping are standard in treewidth algorithms~\cite[Section~2.1]{BDDFLP16}. Column-two matrices are classical frame/gain matrices (Zaslavsky~\cite[Theorem~2.1(b)]{Zas03}; Nelson and van Zwam~\cite[Section~2]{NvZ15}); our direct proof of Lemma~\ref{lem:proj-dir} avoids graph-gain conventions that require special handling for singleton columns in characteristic $2$.
+\item \emph{Scope boundaries:} These results are additive-grammar representation obstructions; they do not establish lower bounds for arbitrary products, interleaved compositions, or general arithmetic circuits.
+\end{itemize}
+
+\subsection*{Open problems}
+\begin{enumerate}[label=(\arabic*),leftmargin=2em]
+\item \emph{Optimal exponential base:} Can the base $9^r$ in~\eqref{eq:complex-cutoff} (arising from the $1/3$ two-color retention factor squared) be sharpened for column-two or treewidth-bounded denominators, or is exponential growth in $r$ tight up to the base?
+\item \emph{Low-rank correction in positive characteristic:} Does an analogue of Theorem~\ref{thm:field-routed} hold with an additional rank-$t$ summand $K$ over finite fields?
+\item \emph{Fixed-tolerance approximation:} For a fixed target error $\varepsilon > 0$ independent of $N$, does approximating $U$ within operator norm $\varepsilon$ by~\eqref{eq:complex-model} still require $r = \Omega(\log N)$?
+\item \emph{Short products of routed inverses:} Extend the common-rectangle obstruction from additive sums $\sum_i L_i Q_i^{-1} R_i$ to bounded-depth products or interleaved sums of sparse-inverse blocks.
+\end{enumerate}
+
+\section*{Data and code availability}
+All verification artifacts are publicly available at
+\begin{center}
+\url{https://github.com/AgentSlop-Si/routed-inverse-sums}
+\end{center}
+and consist of:
+\begin{enumerate}[label=(\arabic*),leftmargin=2em]
+\item A standalone Python verification script (\texttt{verify\_routed\_inverse\_sums.py}, standard library only) exhaustively verifying Lemma~\ref{lem:proj-dir} across all $16{,}124$ column-two matrices over $\F_2$ ($N\le 4$) and $\F_3$ ($N\le 3$) (including $6{,}417$ invertible instances, $68{,}685$ nonempty inverse-row restrictions, and $2{,}418$ instances with row degree $>2$), Lemma~\ref{lem:nullity}(a) across $876$ swapped-complement subset pairs, Lemma~\ref{lem:two-color} across $192{,}524$ balanced red/blue count pairs ($u\le 100$), Theorem~\ref{thm:complex-routed} recurrence legality and strict contradiction across $5{,}400$ parameter tuples (including the $N\le 3697$ example), consecutive-row Vandermonde minors at composite orders, and the $N=4$ over $\F_5$ non-consecutive singular minor control.
+\item A zero-dependency Lean~4 formal verification file (\texttt{RoutedInverseSums.lean}, verified in Lean~4.36.0 using core \texttt{Init} only, with no \texttt{sorry} and pure kernel reduction) symbolically proving the ordered strict-separation contradiction (Theorem~\ref{thm:ordered}), the exact two-color $1/3$-retention inequality and $3$-component sharpness (Lemma~\ref{lem:two-color}), sparse-elimination column survival (Lemma~\ref{lem:sparse-elim}), the exact cutoff expansion~\eqref{eq:complex-cutoff}, non-circular recurrence legality $9q - 1 - q/2 \ge 4q$, and strict contradiction $(N-c)^2 > NB$ (Theorem~\ref{thm:complex-routed}), and the exact-field cell-pigeonhole bound~\eqref{eq:field-cutoff} (Theorem~\ref{thm:field-routed}); and kernel-verifying exhaustive Lemma~\ref{lem:proj-dir} projective-direction counts across all $216$ column-two $3\times 3$ matrices over $\F_2$ ($96$ invertible), all $64$ column-two $2\times 2$ matrices over $\F_3$ ($48$ invertible), and an explicit row-degree-$3$ invertible column-two $3\times 3$ matrix over $\F_3$, all $256$ swapped-complement nullity identities on invertible $4\times 4$ matrices over $\F_2$ and $\F_5$, the $N=4$ over $\F_5$ consecutive vs.\ non-consecutive Vandermonde controls, and concrete legal-recurrence cutoff instances including $N=3698$.
+\end{enumerate}
+
+\bibliographystyle{amsplain}
+\bibliography{references}
+
+\end{document}
